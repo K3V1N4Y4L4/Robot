@@ -1,0 +1,71 @@
+from machine import Pin, ADC
+from time import sleep_ms
+import pcd8544
+import utime
+
+led1 =Pin(33, Pin.OUT) #Led rojo alcohol demaciodo alto
+led2 =Pin(32, Pin.OUT) #Led amarillo alchol intermedio
+led3 =Pin(26, Pin.OUT) #Led azul alcohol bajo
+led4 =Pin(25, Pin.OUT) #Led amarillo alcohol muy bajo
+sensorMq3 =ADC(Pin(4)) # Sensor MQ-3
+buzzer =Pin(27, Pin.OUT) #Buzzer
+
+# Ajustar resolucion de trabajo y el voltaje
+
+sensorMq3.width(ADC.WIDTH_10BIT) #Permite regular la presicion
+sensorMq3.atten(ADC.ATTN_11DB) #Permite trabajar con 5 V
+
+while True:
+    lectura= (sensorMq3.read())
+    print("Alcohol : ",lectura, "Alcohol" ) # Nivel de alcohol numero entero
+    utime.sleep(0.5)
+    
+    porcentaje = lectura / 100
+    print(" Porcentaje : ",porcentaje , "%") # Nivel de alcohol en porcentaje 
+    sleep_ms(1000)
+    
+    if lectura >= 1000: # Leera el % de alcohol y base esto tendremos a que grado de alcohol esta
+            led1.value(1) # Encendera cuando este tenga el limite establecido
+            led2.value(0) # Estaran apagados cuando el limite seria inferior al establecido 
+            led3.value(0) # Estaran apagados cuando el limite seria inferior al establecido 
+            led4.value(0) # Estaran apagados cuando el limite seria inferior al establecido 
+            buzzer.value(1) # El buzzer estara encendido cuando llegue al tope de alcohol establecido
+            print("Alcohol demasiodo alto")
+            
+    elif lectura >= 700:
+            led1.value(0) # Estaran apagados cuando el limite seria inferior al establecido
+            led2.value(1) # Encendera cuando este tenga el limite establecido
+            led3.value(0) # Estaran apagados cuando el limite seria inferior al establecido 
+            led4.value(0) # Estaran apagados cuando el limite seria inferior al establecido
+            buzzer.value(0) # El buzzer estara apagado
+            print("Alcohol intermedio")
+            0
+    elif lectura >= 400:
+            led1.value(0) # Estaran apagados cuando el limite seria inferior al establecido
+            led2.value(0) # Estaran apagados cuando el limite seria inferior al establecido
+            led3.value(1) # Encendera cuando este tenga el limite establecido
+            led4.value(0) # Estaran apagados cuando el limite seria inferior al establecido
+            buzzer.value(0)# El buzzer estara apagado
+            print("Alcohol bajo")
+            
+    elif lectura >= 40:
+            led1.value(0) # Estaran apagados cuando el limite seria inferior al establecido
+            led2.value(0) # Estaran apagados cuando el limite seria inferior al establecido
+            led3.value(0) # Estaran apagados cuando el limite seria inferior al establecido
+            led4.value(1) # Encendera cuando este tenga el limite establecido
+            buzzer.value(0) # El buzzer estara apagado
+            print("Alcohol bajo")
+            
+    else:
+        led1.value(0) # Estaran apagados cuando el limite seria inferior al establecido
+        led2.value(0) # Estaran apagados cuando el limite seria inferior al establecido
+        led3.value(0) # Estaran apagados cuando el limite seria inferior al establecido
+        led4.value(0) # Encendera cuando este tenga el limite establecido
+        buzzer.value(0) # El buzzer estara apagado
+            
+        
+    
+    
+
+
+
